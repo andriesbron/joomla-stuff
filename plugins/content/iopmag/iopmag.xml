@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.1" type="plugin" group="content">
+        <name>IOP Magazine items</name>
+        <author>IOP Media</author>
+        <creationDate>November 2005</creationDate>
+        <copyright>IOP Media www.iopmedia.nl</copyright>
+        <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+        <authorEmail>info@iopmedia.com</authorEmail>
+        <authorUrl>www.iopmedia.com</authorUrl>
+        <version>3.1.0</version>
+        <description>Magzine dingetjes....</description>
+        <files>
+            <filename plugin="iopmag">iopmag.php</filename>
+            <filename>index.html</filename>
+            <filename>iopmag.css</filename>
+        </files>
+        <config>
+            <fields name="params">
+                <fieldset name="basic">
+                    <field
+                        name="title" type="text"
+                        description="Give a title"
+                        label="Title"
+                    ></field>
+                </fieldset>
+                <fieldset name="quote_settings">
+                    <field
+                        name="quote_color" type="text"
+                        description="Color of quote (do not prefix with #)"
+                        label="Quote color"
+                    ></field>
+                    <field
+                        name="quote_boldness" type="text"
+                        description="Gives an accent in pixels to something in the style of the quote."
+                        label="Boldness"
+                    ></field>
+                    <field 
+                        name="quote_style" 
+                        type="list"
+                        description="Select style type"
+                        label="Style"
+                        default="1">
+                            <option value="0">PLUGIN_IOPMAG_STYLE_QUOTE_DEFAULT</option>
+                            <option value="1">PLUGIN_IOPMAG_STYLE_QUOTE_BOXED</option>
+                    </field>
+                </fieldset>
+            </fields>
+        </config>
+</extension>
