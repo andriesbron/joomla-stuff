@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.1" type="plugin" group="content">
+        <name>IOP Media Channel</name>
+        <author>Andries Bron</author>
+        <creationDate>November 2017</creationDate>
+        <copyright>Andries Bron</copyright>
+        <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+        <authorEmail></authorEmail>
+        <authorUrl></authorUrl>
+        <version>0.0.1</version>
+        <description>Simple way to implement a media channel through articles and this plugin.</description>
+        <files>
+            <filename plugin="iopmediachannel">iopmediachannel.php</filename>
+            <filename>index.html</filename>
+            <filename>iopmediachannel.css</filename>
+            <filename>iopmediachannel.js</filename>
+        </files>
+        <config>
+            <fields name="params">
+                <fieldset name="information" label="Media Channel Information">
+                    <field
+                        name="title" 
+                        type="text"
+                        description="Title"
+                        label="Give a catching title"
+                    />
+                    <field
+                        name="description" 
+                        type="text"
+                        description="Description"
+                        label="Give a description of your player."
+                    />
+                    <field
+                        name="videologo" 
+                        type="image"
+                        description="Give a title"
+                        label="Title"
+                    />
+                </fieldset>
+                <fieldset name="settings" label="Media Channel Settings">
+                    <field
+                        name="opengraph" 
+                        type="list"
+                        description="Color of quote (do not prefix with #)"
+                        label="Open Graph"
+                        default="1">
+                        <option value="0">JNO</option>
+                        <option value="1">JYES</option>
+                    </field>
+                    <field
+                        name="ommlrender" 
+                        type="list"
+                        description="Enable OMML wrapping, great for scraping your site."
+                        label="OMML Rendering">
+                        <option value="0">JNO</option>
+                        <option value="1">JYES</option>
+                    </field>
+                    <field
+                        name="ommlparse" 
+                        type="list"
+                        description="Enable OMML wrapping, great for scraping your site."
+                        label="OMML Parsing">
+                        <option value="0">JNO</option>
+                        <option value="1">JYES</option>
+                    </field>
+                    <field 
+                        name="stickyplayer" 
+                        type="list"
+                        description="Select player stickyness"
+                        label="Stickyness"
+                        default="1">
+                            <option value="0">JNO</option>
+                            <option value="1">JYES</option>
+                    </field>
+                </fieldset>
+            </fields>
+        </config>
+</extension>
