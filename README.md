@@ -15,6 +15,9 @@ Usage (demonstrates a .m4v video, but hls is actually the goal to display):
 
 {iop_mediachannel type="video" src="http://mirror.cessen.com/blender.org/peach/trailer/trailer_iphone.m4v"}Dummy text{/iop}
 
+### iopmag
+Can be used to create quoted items and magazine like boxes inside your text. I am still working on this. expecting to provide some usage later, otherwise check the code for usage.
+
 
 # Copyright
 
