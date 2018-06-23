@@ -3,8 +3,9 @@
         <name>IOP Magazine</name>
         <author>IOP Media</author>
         <creationDate>November 2005</creationDate>
-        <copyright>IOP Media www.iopmedia.nl</copyright>
+        <copyright>Andries Bron</copyright>
         <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+<<<<<<< HEAD
         <authorEmail>info@inourplace.nl</authorEmail>
         <authorUrl>www.inourplace.nl</authorUrl>
         <version>0.0.2</version>
@@ -36,6 +37,12 @@ Usage:<br />
 
 ]]>     
         </description>
+=======
+        <authorEmail></authorEmail>
+        <authorUrl></authorUrl>
+        <version>0.0.1</version>
+        <description>Plugin for magazine markup of text items in an article.</description>
+>>>>>>> 63a8e2379684573bc5c7dcb78ddd1265e01f1ccc
         <files>
             <filename plugin="iopmag">iopmag.php</filename>
             <filename>index.html</filename>
