@@ -1,47 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.1" type="plugin" group="content">
-        <name>IOP Magazine items</name>
+        <name>IOP Magazine</name>
         <author>IOP Media</author>
         <creationDate>November 2005</creationDate>
         <copyright>IOP Media www.iopmedia.nl</copyright>
         <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-        <authorEmail>info@iopmedia.com</authorEmail>
-        <authorUrl>www.iopmedia.com</authorUrl>
-        <version>3.1.0</version>
-        <description>Magzine dingetjes....</description>
+        <authorEmail>info@inourplace.nl</authorEmail>
+        <authorUrl>www.inourplace.nl</authorUrl>
+        <version>0.0.2</version>
+        <description>Plugin for creating magazine kind of markup to elements of an article.
+<![CDATA[
+<h2>Quote</h2>
+<p>
+A quote produce an isolated, indented, piece of text to emphasize a statement somewhere within an article.<br />
+<em>
+Usage:<br />
+{iop quote}Quote text{/iop}
+</em>
+</p>
+
+<h2>Slider</h2>
+<p>
+Produces a slider as on <a target="_blank" href="https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_slideshow">w3schools</a><br /><br />
+Attention: Separate urls by a semicolon and make sure that there are no spaces in between the {iop slider}herearenospacesallowed{iop}<br /><br />
+Attention: When you paste links into the Joomla! article editor, make sure to unlink them! Otherwise Joomla! inserts them as html hyperlink which causes a rendering failure.<br /><br />
+Attention: Currently only 1 slider per article is allowed.<br /><br />
+If you stick to the rules, the slider is a nice thing. You can also add text caption, simply precede the image url by the caption text and close it with a vertical line character "|".
+<em>
+Usage:<br />
+{iop slideshow}This is slide 1|https://www.w3schools.com/howto/img_nature_wide.jpg;This is slide 2|https://www.w3schools.com/howto/img_snow_wide.jpg;https://www.w3schools.com/howto/img_mountains_wide.jpg{/iop}
+</em>
+
+
+</p>
+
+]]>     
+        </description>
         <files>
             <filename plugin="iopmag">iopmag.php</filename>
             <filename>index.html</filename>
             <filename>iopmag.css</filename>
+            <filename>iopmag.js</filename>
+            <folder>language</folder>
         </files>
+        <languages>
+            <language tag="en-GB">language/en-GB/en-GB.plg_iopmag.ini</language>
+            <language tag="en-GB">language/en-GB/en-GB.plg_iopmag.sys.ini</language>
+        </languages>
         <config>
             <fields name="params">
                 <fieldset name="basic">
                     <field
-                        name="title" type="text"
+                        name="title" 
+                        type="text"
                         description="Give a title"
                         label="Title"
                     ></field>
                 </fieldset>
                 <fieldset name="quote_settings">
                     <field
-                        name="quote_color" type="text"
-                        description="Color of quote (do not prefix with #)"
-                        label="Quote color"
+                        name="quote_color" 
+                        type="text"
+                        label="PLUGIN_IOPMAG_STYLE_QUOTE_COLOR_LBL"
+                        description="PLUGIN_IOPMAG_STYLE_QUOTE_COLOR_DESC"
                     ></field>
                     <field
-                        name="quote_boldness" type="text"
-                        description="Gives an accent in pixels to something in the style of the quote."
-                        label="Boldness"
+                        name="quote_boldness" 
+                        type="checkbox"
+                        label="PLUGIN_IOPMAG_STYLE_QUOTE_BOLD_LBL"
+                        description="PLUGIN_IOPMAG_STYLE_QUOTE_BOLD_DESC"
                     ></field>
                     <field 
-                        name="quote_style" 
+                        name="quote_style"
                         type="list"
                         description="Select style type"
                         label="Style"
-                        default="1">
-                            <option value="0">PLUGIN_IOPMAG_STYLE_QUOTE_DEFAULT</option>
-                            <option value="1">PLUGIN_IOPMAG_STYLE_QUOTE_BOXED</option>
+                        default="default">
+                            <option value="default">PLUGIN_IOPMAG_STYLE_QUOTE_DEFAULT</option>
+                            <option value="boxed">PLUGIN_IOPMAG_STYLE_QUOTE_BOXED</option>
                     </field>
                 </fieldset>
             </fields>

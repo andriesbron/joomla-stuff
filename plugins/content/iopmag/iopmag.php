@@ -1,7 +1,9 @@
 <?php
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
-  
+ 
+ /* Letop de editor in backend joomla houd van span elementen en die verschijnen dan wel eens en dat geeft parsing problemen */
+ 
 // Import library dependencies
 jimport('joomla.event.plugin');
 jimport('joomla.plugin.plugin');
@@ -31,7 +33,11 @@ class plgContentIopmag extends JPlugin
     function plgContentIopmag(&$subject) {
     	
         parent::__construct($subject);
+        
         $this->loadLanguage();
+        $lang = JFactory::getLanguage();
+        $lang->load('plg_iopmag', dirname(__FILE__));
+        
         $this->plugin = JPluginHelper::getPlugin('content', 'iopmag');
         $this->params = new JRegistry($this->plugin->params);
 		$document	= JFactory::getDocument();
@@ -42,8 +48,10 @@ class plgContentIopmag extends JPlugin
 		}				
         // load current language
         $this->loadLanguage();
-		$document->addStyleSheet(JURI::base(). "plugins/content/iopmag/iopmag.css");
-
+        $document->addStyleSheet(JURI::base(). "plugins/content/iopmag/iopmag.css?rand=".rand ( 0, 9999 ));
+        $document->addScript(JURI::base(). 'plugins/content/iopmag/iopmag.js?rand='.rand ( 0, 9999 ));
+        
+        
 		//JHTML::_('behavior.modal');
     }
 
@@ -52,7 +60,13 @@ class plgContentIopmag extends JPlugin
     	if ($context == 'com_finder.indexer') {
     		return true;
     	}
+    	// Get template parameters:
+    	$app  = JFactory::getApplication();
+    	$tparams = $app->getTemplate(true)->params;    	
+    	$this->color =  $tparams->get('templateColor');
+    	$this->bgcolor = $tparams->get('templateBackgroundColor');
     	
+
         if (is_object($row)) {
 
             if (preg_match("#{iop*(.*?)}#", strtolower($row->text))) {
@@ -70,48 +84,119 @@ $pluginParams = new JRegistry($plugin->params);
 $param1 = $pluginParams->get('param1');
      * @param unknown $text
      * @return unknown
+     * 
+     * @todo My gosh, this is legacy of a long time ago... this is a little bit of a mess Andries...
      */
     private function createMagItem( $text ) {
     	$arr_matches = array();
     	preg_match_all("#{iop (.*?)}(.*?){/iop}#", $text->text, $arr_matches ); /*!< First all classes are obtained that are used icw iop delimiter. */
-    	foreach( $arr_matches[1] as $magazine_item )
-    	{
+
+    	// Loop through each match
+    	foreach( $arr_matches[1] as $magazine_item ) {
+    		//Isolate the magazine item in case attributes were given.
     		$magazine_item_parts = explode(' ',$magazine_item);
-    		$item_option = $magazine_item_parts[ 0 ]; // Contains the string of what to do with the iop magazine item.
+       		$item_option = $magazine_item_parts[ 0 ]; // Contains the string of what to do with the iop magazine item.
     		
-    		// Find magazine items in the content with the particular attribute:
+    		// Find the attributes:
     		$attributes = array();
     		$regex = "#{iop " . $item_option. "}(.*?){/iop}#"; //Find a match with the whole story in between { ... }
+    		
+    		//Refind the matches and store the attributes weird way, but I think it works...
     		if( preg_match_all( $regex, $text->text, $matches, PREG_PATTERN_ORDER ) ) {
     			foreach ( $matches[0] as $key => $match ) {
     				foreach ( $magazine_item_parts as $part ) {
     					$part = strip_tags( $part );
     					$item_attributes = explode( '=', $part );
-    					
-    					//Now I can do stuff with the attributes.
+
     				}
     			}
     		}
-    		
-    		$leader = "<div>";
-    		$trailer = "</div>";
-    		
+    		/*
+    		echo "<pre>";
+    		print_r($matches[1][0]);
+    		echo "</pre>";
+    		*/
+    		$match = $matches[0][0];
+    		$leader = "";
+    		$trailer = "";
+
     		switch ( $item_option ) {   /*!< Additional mark-up for magazine items. */
-    			
     			case "qt": // Legacy...
     			case "quote":
-    				$color = "color:#".$this->params->get("quote_color").";";
+    				//Getting the color from the setting
+    				if ($this->params->get("quote_color") != "" ) {
+    					$color = "color:#".$this->params->get("quote_color").";";
+    					
+    				} else {
+    					$color = "color:".$this->color.";";
+    					
+    				}
     				if ( $this->params->get("quote_style") == "0" ) {
     					$style_plus = "border-left:".$this->params->get("quote_boldness")."pt solid;";
-    				}
     				
+    				}
     				$style = $color.$style_plus;
+    				
+    				// Creating a leader and a trailer for the content within the plugin.
     				$leader = "<div class=\"plg_mag_quote_style_option_".$this->params->get("quote_style")."\" style=\"".$style."\">";
     				$trailer = "</div>";
+    				// Get the thing into style
+    				$matchReplacement = $match;
+    				$matchReplacement = preg_replace("#{/iop}#", $trailer, $matchReplacement );
+    				$matchReplacement = preg_replace("#{iop ".$item_option."}#", $leader, $matchReplacement );
+    				$text->text = preg_replace( "#".$match."#", $matchReplacement , $text->text);
     				break;
     				
     			case "slideshow":
+    				$innercontent = $matches[1][0];
+    				$images = explode( ';', $innercontent );
+    				// Create div containers of the slideshow:
+    				$img_divs = "";
+    				$img_clicks = "";
+    				$img_counter = 1;
+    				$img_count = count($images);
+    				foreach ($images as $img){
+    					$img_desc = "";
+    					if ( strrpos($img, "|")) {
+    						$img_arr = explode("|", $img);
+    						$img_desc = $img_arr[0];
+    						// No spaces allowed in url names:
+    						$img_url = str_replace(' ', '', $img_arr[1]);
+    						
+    					} else {
+    						$img_url = str_replace(' ', '', $img);
+    						
+    					}
+    					$img_divs .= '<div class="mySlides faade">
+  <div class="numbertext">'.$img_counter.' / '.$img_count.'</div>
+  <img src="'.$img_url.'" style="width:100%">
+  <div class="text">'.$img_desc.'</div>
+</div>
+
+';
+    					$img_clicks .= '<span class="dot" onclick="currentSlide('.$img_counter.')"></span>';
+    					$img_counter += 1;
+    				}
     				
+    				$slider = '<div class="slideshow-container">
+'.$img_divs.'
+<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+<a class="next" onclick="plusSlides(1)">&#10095;</a>
+</div>
+<br>
+<div style="text-align:center">
+'.$img_clicks.'
+</div>
+
+<script src="plugins/content/iopmag/iopmag.js"></script>';
+    				
+    				// Get the thing into style
+    				$matchReplacement = $match;
+    				//$matchReplacement = str_replace($match, $slider, $match);
+    				$text->text = str_replace( "".$match."", $slider, $text->text);
+    				//echo "<textarea>".$matchReplacement."</textarea>";
+    				//echo "".$matchReplacement."";
+    				//die;
     				break;
     				
     			case "footnote":
@@ -120,12 +205,6 @@ $param1 = $pluginParams->get('param1');
     		}
     		
     		
-    		// Get the thing into style
-    		$matchReplacement = $match;
-    		$matchReplacement = preg_replace("#{/iop}#", $trailer, $matchReplacement );
-    		$matchReplacement = preg_replace("#{iop ".$item_option."}#", $leader, $matchReplacement );
-    		
-    		$text->text = preg_replace( "#".$match."#", $matchReplacement , $text->text);
     	}
     	
     	return $text->text;
